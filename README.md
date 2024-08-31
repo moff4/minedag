@@ -1,2 +1,3 @@
-# mine-dag
+# Mine DAG
 Mine realisation of DAG
+
