@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setuptools.setup(
     name='minedag',
-    version='1.2.1',
+    version='1.3',
     author='Komissarov Andrey',
     author_email='Komissar.off.andrey@gmail.com',
     description='Mine realisation of DAG',

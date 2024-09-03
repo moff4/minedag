@@ -15,8 +15,11 @@ class MineDag(Generic[T]):
         self._weights = {}  # type: dict[tuple[T, T], float]
 
     def add_node(self, obj: T) -> None:
-        self._src_dst_map[obj] = set()
-        self._dst_src_map[obj] = set()
+        if obj not in self._src_dst_map:
+            self._src_dst_map[obj] = set()
+
+        if obj not in self._dst_src_map:
+            self._dst_src_map[obj] = set()
 
     def add_edge(self, src: T, dst: T, weight: float = 1) -> None:
         if src in self._src_dst_map[dst] or dst in self._dst_src_map[src]:
@@ -172,3 +175,32 @@ class MineDag(Generic[T]):
             count_map[_obj] = comp_func(candidates, key=lambda x: x[0])
 
         return count_map
+
+    def get_reachable(self, objs: set[T]) -> set[T]:
+        """
+        pass as params set of nodes, u have already reached,
+        method will return layer; layer contains objects, u can reach on next iteration
+        """
+        in_result = set(objs)  # type: set[T]
+
+        next_lvl = set()
+
+        for dst, srcs in self._dst_src_map.items():
+            if dst not in in_result:
+                if (srcs & in_result) and len(srcs - in_result) == 0:
+                    next_lvl.add(dst)
+
+        return next_lvl
+
+    def get_layer_iterations(self, objs: set[T]) -> list[set[T]]:
+        """
+        pass as params set of nodes, u have already reached,
+        method will return list of layers; each layer contains objects, u can reach on i's iteration
+        """
+        result = [set(objs)]  # type: list[set[T]]
+        in_result = set(objs)  # type: set[T]
+
+        while next_lvl := self.get_reachable(in_result):
+            result.append(next_lvl)
+            in_result.update(next_lvl)
+        return result
